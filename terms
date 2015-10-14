@@ -1,0 +1,129 @@
+# GNU Screen - main configuration file
+# All other .screenrc files will source this file to inherit settings.
+# Original Author: Christian Wills - cwills.sys@gmail.com (https://gist.github.com/ChrisWills/1337178)
+# Updated Author: David Kemeza - dkemeza@somethingsomething.com
+
+startup_message off
+
+# Allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# Tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Enables use of shift-PgUp and shift-PgDn
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Erase background with current bg color
+defbce "on"
+
+# Enable 256 color term
+term xterm-256color
+
+# Cache 30000 lines for scroll back
+defscrollback 30000
+
+# New mail notification
+# backtick 101 30 15 $HOME/bin/mailstatus.sh
+
+hardstatus alwayslastline
+# Very nice tabbed colored hardstatus line
+# hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
+# hardstatus string '%{= g}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= R}%n*%f %t%?%{= R}(%u)%?%{= w}%+Lw%?%= %{= g}][ %{y}Load: %l %{g}][%{B}%Y-%m-%d %{W}%c:%s%{g}]'
+# Good, just fixin wierd - issue with terminal numbers
+# hardstatus string '%{= g}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= r}%n*%f %t%?%{= r}(%u)%?%{= w}%+Lw %?%= %{= g}][ %{y}Load: %l %{g}][%{B}%D %m.%d.%Y %{W}%c:%s %{g}]'
+hardstatus string '%{= g}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= r}%n*%f %t%?%{= r}(%u)%?%{= w}%+Lw %?%= %{= g}][ %{y}Load: %l %{g}][%{B}%D %m.%d.%Y %{W}%c:%s %{g}]'
+
+# another interesting status line
+# hardstatus string "%{= .w}%-Lw%{+b .5}[%{-b .w}%n %t%{+b .5}]%{-b .w}%+Lw %-= %{+b .5}[%{-b .w}%c%{+b k5}] [%{-b .w}%l%{+b .5}]"
+
+# change command character from ctrl-a to ctrl-b (emacs users may want this)
+# escape ^Bb
+
+# Hide hardstatus: ctrl-a f
+bind f eval "hardstatus ignore"
+# Show hardstatus: ctrl-a F
+bind F eval "hardstatus alwayslastline"
+# bind space to windowlist
+bind ' ' windowlist
+# Allow ^-left and ^-right through windows -- DMK
+# output from hexdump
+# ^[[1;5D CTRL+Left
+# ^[[1;5C CTRL+Right
+bindkey "^[[1;5D" prev
+bindkey "^[[1;5C" next
+
+# Start Additional screens
+# screen -t (tab) {name of tab} {binary}
+# Add ssh to ssh to ssh here where needed
+screen -t calvin bash
+screen -t dp3 bin/sshx.sh dp3
+screen -t dp4 bin/sshx.sh dp4
+screen -t jibb(1) bin/sshx.sh jibb10
+screen -t jibb(2) bin/sshx.sh jibb10
+screen -t disc(1) bash
+screen -t disc(2) bash
+screen -t nexus bin/sshx.sh nexus01
+
+# select first screen
+select 0
+
+
+# ---------- Info for hardstatus line ---------
+# http://blog.eater.org/2008/12/new-screenrc-hardstatus-string.html
+# %{= ky}     set color to yellow on black.
+# %{= yk}     set color to black on yellow.
+# %{=r}       reverse the color attrs
+# %-Lw        all window #s, titles, and flags before the current window.
+# %n %t       current window number and title.
+# %+Lw        all windows #s, titles, and flags after the current window.
+# %-=         pad remaining spaces.
+# %M%d        month and day, like MmmDD.
+# %c          current time, like HH:MM.
+# %H          hostname
+# http://www.debian-administration.org/articles/560
+# http://www.calmar.ws/dotfiles/screenrc.html
+# ------------------------------------------------------------------------------
+# caption description:
+# ------------------------------------------------------------------------------
+#
+# caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f* %t%{-}%+Lw%-0<"
+# caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f* %t%{-}%+Lw%-0<"
+#
+# Anything I don't describe is treated literally.
+#
+# %?          - Start of a conditional statement.
+#  %F         - Use this part of the statement if the window has focus (i.e. it
+#               is the only window or the currently active one).
+#  %{-b bc}   - Turn off bold, blue foreground, cyan background.
+# %:          - else
+#  %{-b bb}   - Turn off bold, blue foreground, blue background (this obscures
+#               the text on non-focused windows and just gives a blue line).
+# %?          - End conditional statement.
+#  %C         - time (hh:mm, leading space) in 12 hour format
+#  %D         - Three-letter day-of-week appreviation
+#  %M         - Three-letter month appreviation
+#  %d         - Day of the month
+#  %H         - hostname
+#  %?         - Start of conditional statement.
+#   %F        - Use this part of the statement if the window has focus.
+#   %{+u wb}  - underlined, white foreground, blue background
+#  %?         - End conditional (if not focused, text remaind blue on blue).
+#    %L=      - truncation/padding point.  With the 'L' qualifier, basically
+#               just acts as a reference point.  Further truncation/padding is
+#               done relative to here, not the beginning of the string
+#    %-Lw     - window list up to but not including the current window (-),
+#               show window flags (L)
+#    %45>     - truncation/padding marker; place this point about 45% of the
+#               way into the display area (45)
+#    %{+b by} - add bold (still underlined from before), blue foreground,
+#               yellow background
+#      %n     - number of the current window
+#      %f     - flags for current window
+#      %t     - title of current window
+#    %{-}     - undo last color change (so now we're back to underlined white
+#               on blue)  (technically, this is a pop; a second invocation
+#               would drop things back to unadorned blue on cyan)
+#    %+Lw     - window list from the next window on (-), show window flags (L)
+#    %-0<     - truncation/padding point.  Place this point zero spaces (0)
+#               from the right margin (-).
